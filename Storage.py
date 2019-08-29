@@ -2,18 +2,18 @@ import json
 FILE_NAME = 'users.json'
 
 
-def loadFile():
+def loadFile():  # Carrega arquivo
     from os.path import isfile
     if isfile(FILE_NAME):
         arq = open(FILE_NAME, 'r')
         file = json.load(arq)
         arq.close()
+        return file
     else:
         return dict()
-    return file
 
 
-def updateFile(users):
+def updateFile(users):  # Reescreve o arquivo
     arq = open(FILE_NAME, 'w')  # Re-cria o arquivo
     json.dump(users, arq, indent=4)
     arq.close()
@@ -26,10 +26,21 @@ def updateAlert(chatid, users, alert):
     updateFile(users)
 
 
-def createAlert(message, day, hour):
+def createAlert(message, day, hour):  # Cria objeto no padrão para armazenamento
     from datetime import datetime
     today = datetime.today()
+    d, m, y, h, mn = formatDateHour(today, day, hour)
+    dt = datetime(y, m, d, h, mn)
+    return {
+        'message': message,
+        'day': dt.strftime('%d/%m/%Y'),
+        'hour': dt.strftime('%H:%M'),
+        # 'createdAt': {'day': today.strftime('%d/%m/%Y'), 'hour': today.strftime('%H:%M:%S')},
+        'enabled': True
+    }
 
+
+def formatDateHour(today, day, hour):
     d = day.split('/')
     if len(d) == 1:
         d.append(today.month)
@@ -42,25 +53,18 @@ def createAlert(message, day, hour):
 
     d, m, y = [int(i) for i in d]
     h, mn = [int(i) for i in h]
-    dt = datetime(y, m, d, h, mn)
-    return {
-        'message': message,
-        'day': dt.strftime('%d/%m/%Y'),
-        'hour': dt.strftime('%H:%M'),
-        # 'createdAt': {'day': today.strftime('%d/%m/%Y'), 'hour': today.strftime('%H:%M:%S')},
-        'enabled': True
-    }
+    return d, m, y, h, mn
 
 
-def getNumEnabledAlerts(user):
+def getNumEnabledAlerts(user):  # Pega número de alerta ativados do usuário especificado
     n = 0
     for alert in user:
         if alert['enabled']:
             n += 1
-    return n
-    # return sum([1 for alert in user if alert['enabled']])
+    return n  # return sum([1 for alert in user if alert['enabled']])
 
-def getAlertList(chatid, users):
+
+def getAlertList(chatid, users):  # Retorna lista dos alertas ativados
     if chatid not in users:
         return '*Não há nenhum lembrete ativo em sua agenda.*'
     user = users[chatid]
