@@ -13,6 +13,13 @@ from emoji import emojize
 # https://core.telegram.org/bots/api
 # https://www.webfx.com/tools/emoji-cheat-sheet/
 
+# SUGESTÕES DE MELHORIA
+# - Ordenamento na lista de lembretes por data em que irá acontecer
+# - Não permitir datas/horas passadas
+# - Habilitar/Desabilitar lembretes
+# - Função de periodicidade nos lembretes (ex: Seg a Sab)
+# - Menu de configs (ex: Tempo de Soneca = 15 min)
+
 
 def onChatMessage(msg):  # Função para tratamento do recebimento de mensagens
     # pprint(msg)
